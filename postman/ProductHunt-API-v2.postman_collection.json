@@ -1,0 +1,306 @@
+{
+  "info": {
+    "_postman_id": "ph-api-v2-collection",
+    "name": "Product Hunt API v2 (GraphQL)",
+    "description": "Complete Postman collection for all queries and mutations documented at\n[Product Hunt API v2 GraphQL Reference](https://api-v2-docs.producthunt.com/).\n\n## Setup\n1. Import this collection and `ProductHunt-API-v2.postman_environment.json`.\n2. Set `PH_API_TOKEN` in the environment (get one at https://www.producthunt.com/v2/oauth/applications).\n3. Update sample variables (`sample_post_slug`, `sample_comment_id`, etc.).\n\n## Endpoint\n`POST https://api.producthunt.com/v2/api/graphql`\n\n## Operations\n**Queries (9):** collection, collections, comment, post, posts, topic, topics, user, viewer\n**Mutations (2):** userFollow, userFollowUndo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{PH_API_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "PH_API_URL",
+      "value": "https://api.producthunt.com/v2/api/graphql"
+    },
+    {
+      "key": "PH_API_TOKEN",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Queries",
+      "description": "All 9 root Query operations from the Product Hunt v2 GraphQL schema.",
+      "item": [
+        {
+          "name": "collection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment PageInfoFields on PageInfo {\\n    hasNextPage\\n    hasPreviousPage\\n    startCursor\\n    endCursor\\n  }\\nfragment TopicFields on Topic {\\n    id\\n    name\\n    slug\\n    description\\n    postsCount\\n    followersCount\\n    isFollowing\\n    createdAt\\n    url\\n    image\\n  }\\nfragment MediaFields on Media {\\n    type\\n    url\\n    videoUrl\\n  }\\nfragment ProductLinkFields on ProductLink {\\n    type\\n    url\\n  }\\nfragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nfragment PostCoreFields on Post {\\n    id\\n    name\\n    slug\\n    tagline\\n    description\\n    url\\n    website\\n    votesCount\\n    commentsCount\\n    reviewsCount\\n    reviewsRating\\n    isVoted\\n    isCollected\\n    createdAt\\n    featuredAt\\n    scheduledAt\\n    dailyRank\\n    weeklyRank\\n    monthlyRank\\n    yearlyRank\\n    latestScore\\n    makerReplies\\n    userId\\n    thumbnail { ...MediaFields }\\n    media { ...MediaFields }\\n    productLinks { ...ProductLinkFields }\\n    user { ...UserCoreFields }\\n    makers { ...UserCoreFields }\\n  }\\nfragment CollectionCoreFields on Collection {\\n    id\\n    name\\n    tagline\\n    description\\n    url\\n    coverImage\\n    followersCount\\n    isFollowing\\n    createdAt\\n    featuredAt\\n    userId\\n    user { ...UserCoreFields }\\n  }\\nquery Collection($id: ID, $slug: String) { collection(id: $id, slug: $slug) { ...CollectionCoreFields posts(first: 10) { edges { cursor node { ...PostCoreFields } } pageInfo { ...PageInfoFields } totalCount } topics(first: 10) { edges { cursor node { ...TopicFields } } pageInfo { ...PageInfoFields } totalCount } } }\",\n  \"variables\": {\n    \"slug\": \"{{sample_collection_slug}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up a Collection (only published).\n\n**Arguments:** `id` (ID), `slug` (String)"
+          },
+          "response": []
+        },
+        {
+          "name": "collections",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment PageInfoFields on PageInfo {\\n    hasNextPage\\n    hasPreviousPage\\n    startCursor\\n    endCursor\\n  }\\nfragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nfragment CollectionListFields on Collection {\\n    id\\n    name\\n    description\\n    url\\n    coverImage\\n    followersCount\\n    isFollowing\\n    createdAt\\n    featuredAt\\n    userId\\n    user { ...UserCoreFields }\\n  }\\nquery Collections( $postId: ID $userId: ID $featured: Boolean $order: CollectionsOrder $after: String $before: String $first: Int $last: Int ) { collections( postId: $postId userId: $userId featured: $featured order: $order after: $after before: $before first: $first last: $last ) { edges { cursor node { ...CollectionListFields } } nodes { ...CollectionListFields } pageInfo { ...PageInfoFields } totalCount } }\",\n  \"variables\": {\n    \"first\": 10,\n    \"order\": \"NEWEST\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up Collections by various parameters.\n\n**Arguments:** `postId`, `userId`, `featured`, `order` (NEWEST | FOLLOWERS_COUNT | FEATURED_AT), `after`, `before`, `first`, `last`"
+          },
+          "response": []
+        },
+        {
+          "name": "comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment PageInfoFields on PageInfo {\\n    hasNextPage\\n    hasPreviousPage\\n    startCursor\\n    endCursor\\n  }\\nfragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nfragment CommentCoreFields on Comment {\\n    id\\n    body\\n    url\\n    votesCount\\n    isVoted\\n    createdAt\\n    userId\\n    parentId\\n    user { ...UserCoreFields }\\n    parent {\\n      id\\n      body\\n      userId\\n    }\\n  }\\nquery Comment($id: ID!) { comment(id: $id) { ...CommentCoreFields replies(first: 10, order: NEWEST) { edges { cursor node { ...CommentCoreFields } } nodes { ...CommentCoreFields } pageInfo { ...PageInfoFields } totalCount } votes(first: 10) { edges { cursor node { id createdAt userId user { ...UserCoreFields } } } pageInfo { ...PageInfoFields } totalCount } } }\",\n  \"variables\": {\n    \"id\": \"{{sample_comment_id}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up a Comment.\n\n**Arguments:** `id` (ID!, required)"
+          },
+          "response": []
+        },
+        {
+          "name": "post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment PageInfoFields on PageInfo {\\n    hasNextPage\\n    hasPreviousPage\\n    startCursor\\n    endCursor\\n  }\\nfragment TopicFields on Topic {\\n    id\\n    name\\n    slug\\n    description\\n    postsCount\\n    followersCount\\n    isFollowing\\n    createdAt\\n    url\\n    image\\n  }\\nfragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nfragment MediaFields on Media {\\n    type\\n    url\\n    videoUrl\\n  }\\nfragment ProductLinkFields on ProductLink {\\n    type\\n    url\\n  }\\nfragment PostCoreFields on Post {\\n    id\\n    name\\n    slug\\n    tagline\\n    description\\n    url\\n    website\\n    votesCount\\n    commentsCount\\n    reviewsCount\\n    reviewsRating\\n    isVoted\\n    isCollected\\n    createdAt\\n    featuredAt\\n    scheduledAt\\n    dailyRank\\n    weeklyRank\\n    monthlyRank\\n    yearlyRank\\n    latestScore\\n    makerReplies\\n    userId\\n    thumbnail { ...MediaFields }\\n    media { ...MediaFields }\\n    productLinks { ...ProductLinkFields }\\n    user { ...UserCoreFields }\\n    makers { ...UserCoreFields }\\n  }\\nfragment CommentCoreFields on Comment {\\n    id\\n    body\\n    url\\n    votesCount\\n    isVoted\\n    createdAt\\n    userId\\n    parentId\\n    user { ...UserCoreFields }\\n    parent {\\n      id\\n      body\\n      userId\\n    }\\n  }\\nfragment CollectionCoreFields on Collection {\\n    id\\n    name\\n    tagline\\n    description\\n    url\\n    coverImage\\n    followersCount\\n    isFollowing\\n    createdAt\\n    featuredAt\\n    userId\\n    user { ...UserCoreFields }\\n  }\\nquery Post($id: ID, $slug: String) { post(id: $id, slug: $slug) { ...PostCoreFields topics(first: 10) { edges { cursor node { ...TopicFields } } pageInfo { ...PageInfoFields } totalCount } comments(first: 10, order: NEWEST) { edges { cursor node { ...CommentCoreFields } } pageInfo { ...PageInfoFields } totalCount } collections(first: 10) { edges { cursor node { ...CollectionCoreFields } } pageInfo { ...PageInfoFields } totalCount } votes(first: 10) { edges { cursor node { id createdAt userId user { ...UserCoreFields } } } pageInfo { ...PageInfoFields } totalCount } } }\",\n  \"variables\": {\n    \"slug\": \"{{sample_post_slug}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up a Post.\n\n**Arguments:** `id` (ID), `slug` (String) — provide one of id or slug"
+          },
+          "response": []
+        },
+        {
+          "name": "posts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment PageInfoFields on PageInfo {\\n    hasNextPage\\n    hasPreviousPage\\n    startCursor\\n    endCursor\\n  }\\nfragment MediaFields on Media {\\n    type\\n    url\\n    videoUrl\\n  }\\nfragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nfragment PostListFields on Post {\\n    id\\n    name\\n    slug\\n    tagline\\n    url\\n    website\\n    votesCount\\n    commentsCount\\n    createdAt\\n    featuredAt\\n    dailyRank\\n    weeklyRank\\n    monthlyRank\\n    yearlyRank\\n    userId\\n    thumbnail { ...MediaFields }\\n    user { ...UserCoreFields }\\n  }\\nquery Posts( $featured: Boolean $postedBefore: DateTime $postedAfter: DateTime $topic: String $order: PostsOrder $twitterUrl: String $url: String $after: String $before: String $first: Int $last: Int ) { posts( featured: $featured postedBefore: $postedBefore postedAfter: $postedAfter topic: $topic order: $order twitterUrl: $twitterUrl url: $url after: $after before: $before first: $first last: $last ) { edges { cursor node { ...PostListFields } } nodes { ...PostListFields } pageInfo { ...PageInfoFields } totalCount } }\",\n  \"variables\": {\n    \"first\": 10,\n    \"order\": \"RANKING\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up Posts by various parameters.\n\n**Arguments:** `featured`, `postedBefore`, `postedAfter`, `topic`, `order` (FEATURED_AT | VOTES | RANKING | NEWEST), `twitterUrl`, `url`, `after`, `before`, `first`, `last`"
+          },
+          "response": []
+        },
+        {
+          "name": "topic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment TopicFields on Topic {\\n    id\\n    name\\n    slug\\n    description\\n    postsCount\\n    followersCount\\n    isFollowing\\n    createdAt\\n    url\\n    image\\n  }\\nquery Topic($id: ID, $slug: String) { topic(id: $id, slug: $slug) { ...TopicFields } }\",\n  \"variables\": {\n    \"slug\": \"{{sample_topic_slug}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up a Topic.\n\n**Arguments:** `id` (ID), `slug` (String)"
+          },
+          "response": []
+        },
+        {
+          "name": "topics",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment PageInfoFields on PageInfo {\\n    hasNextPage\\n    hasPreviousPage\\n    startCursor\\n    endCursor\\n  }\\nfragment TopicFields on Topic {\\n    id\\n    name\\n    slug\\n    description\\n    postsCount\\n    followersCount\\n    isFollowing\\n    createdAt\\n    url\\n    image\\n  }\\nquery Topics( $followedByUserid: ID $query: String $order: TopicsOrder $after: String $before: String $first: Int $last: Int ) { topics( followedByUserid: $followedByUserid query: $query order: $order after: $after before: $before first: $first last: $last ) { edges { cursor node { ...TopicFields } } nodes { ...TopicFields } pageInfo { ...PageInfoFields } totalCount } }\",\n  \"variables\": {\n    \"first\": 10,\n    \"order\": \"FOLLOWERS_COUNT\",\n    \"query\": \"ai\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up Topics by various parameters.\n\n**Arguments:** `followedByUserid`, `query`, `order` (NEWEST | FOLLOWERS_COUNT), `after`, `before`, `first`, `last`"
+          },
+          "response": []
+        },
+        {
+          "name": "user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment PageInfoFields on PageInfo {\\n    hasNextPage\\n    hasPreviousPage\\n    startCursor\\n    endCursor\\n  }\\nfragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nfragment MediaFields on Media {\\n    type\\n    url\\n    videoUrl\\n  }\\nfragment ProductLinkFields on ProductLink {\\n    type\\n    url\\n  }\\nfragment PostCoreFields on Post {\\n    id\\n    name\\n    slug\\n    tagline\\n    description\\n    url\\n    website\\n    votesCount\\n    commentsCount\\n    reviewsCount\\n    reviewsRating\\n    isVoted\\n    isCollected\\n    createdAt\\n    featuredAt\\n    scheduledAt\\n    dailyRank\\n    weeklyRank\\n    monthlyRank\\n    yearlyRank\\n    latestScore\\n    makerReplies\\n    userId\\n    thumbnail { ...MediaFields }\\n    media { ...MediaFields }\\n    productLinks { ...ProductLinkFields }\\n    user { ...UserCoreFields }\\n    makers { ...UserCoreFields }\\n  }\\nfragment CollectionCoreFields on Collection {\\n    id\\n    name\\n    tagline\\n    description\\n    url\\n    coverImage\\n    followersCount\\n    isFollowing\\n    createdAt\\n    featuredAt\\n    userId\\n    user { ...UserCoreFields }\\n  }\\nquery User($id: ID, $username: String) { user(id: $id, username: $username) { ...UserCoreFields followers(first: 10) { edges { cursor node { ...UserCoreFields } } pageInfo { ...PageInfoFields } totalCount } following(first: 10) { edges { cursor node { ...UserCoreFields } } pageInfo { ...PageInfoFields } totalCount } madePosts(first: 10) { edges { cursor node { ...PostCoreFields } } pageInfo { ...PageInfoFields } totalCount } submittedPosts(first: 10) { edges { cursor node { ...PostCoreFields } } pageInfo { ...PageInfoFields } totalCount } votedPosts(first: 10) { edges { cursor node { ...PostCoreFields } } pageInfo { ...PageInfoFields } totalCount } followedCollections(first: 10) { edges { cursor node { ...CollectionCoreFields } } pageInfo { ...PageInfoFields } totalCount } } }\",\n  \"variables\": {\n    \"username\": \"{{sample_username}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Look up a User.\n\n**Arguments:** `id` (ID), `username` (String)"
+          },
+          "response": []
+        },
+        {
+          "name": "viewer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"\\nquery Viewer { viewer { user { id name username url } } }\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Top-level scope for the currently authenticated user (requires a user-scoped OAuth token; developer tokens may return an error)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mutations",
+      "description": "All 2 root Mutation operations. These modify user state — use with caution.",
+      "item": [
+        {
+          "name": "userFollow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nmutation UserFollow($input: UserFollowInput!) { userFollow(input: $input) { clientMutationId errors { field message } node { ...UserCoreFields } } }\",\n  \"variables\": {\n    \"input\": {\n      \"userId\": \"{{sample_user_id}}\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Follow a user.\n\n**Input:** `userId` (ID!, required), `clientMutationId` (String, optional)\n\n> Mutations modify state — use a test account only."
+          },
+          "response": []
+        },
+        {
+          "name": "userFollowUndo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"fragment UserCoreFields on User {\\n    id\\n    name\\n    username\\n    headline\\n    url\\n    websiteUrl\\n    twitterUsername\\n    followersCount\\n    followingCount\\n    isFollowing\\n    isMaker\\n    isViewer\\n    createdAt\\n    profileImage\\n    coverImage\\n  }\\nmutation UserFollowUndo($input: UserFollowUndoInput!) { userFollowUndo(input: $input) { clientMutationId errors { field message } node { ...UserCoreFields } } }\",\n  \"variables\": {\n    \"input\": {\n      \"userId\": \"{{sample_user_id}}\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{PH_API_URL}}",
+            "description": "Unfollow a user.\n\n**Input:** `userId` (ID!, required), `clientMutationId` (String, optional)\n\n> Mutations modify state — use a test account only."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

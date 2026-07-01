@@ -1,0 +1,27 @@
+{
+  "name": "product-hunt-qa",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "prepare:reports": "bun scripts/prepare-reports.ts",
+    "test:api": "bun scripts/run-api-tests.ts",
+    "test:e2e": "bun run prepare:reports && playwright test --project=guest --project=authenticated",
+    "test:e2e:headless": "E2E_HEADLESS=true bun run prepare:reports && E2E_HEADLESS=true playwright test --project=guest --project=authenticated",
+    "test:e2e:login": "bun run prepare:reports && playwright test --project=setup",
+    "test:e2e:login:headless": "E2E_HEADLESS=true bun run prepare:reports && E2E_HEADLESS=true playwright test --project=setup",
+    "test:e2e:all": "bun run prepare:reports && playwright test --project=setup --project=guest --project=authenticated",
+    "test:e2e:all:headless": "E2E_HEADLESS=true bun run prepare:reports && E2E_HEADLESS=true playwright test --project=setup --project=guest --project=authenticated",
+    "test": "bun scripts/run-api-tests.ts && bun run prepare:reports && playwright test --project=guest --project=authenticated",
+    "test:headless": "bun scripts/run-api-tests.ts && E2E_HEADLESS=true bun run prepare:reports && E2E_HEADLESS=true playwright test --project=guest --project=authenticated",
+    "test:report": "playwright show-report reports/e2e/html",
+    "test:report:api": "open reports/api/html/index.html",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
